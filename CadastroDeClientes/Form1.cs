@@ -9,15 +9,16 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
 
 namespace CadastroDeClientes
 {
     public partial class frmCadastroDeClientes : Form
     {
-        int CPF;
-        string NomeCompleto;
-        string NomeSocial;
-        string Email;
+
+        //Conexão com o MySQL
+        MySqlConnection Conexao;
+        string data_source = "datasource=localhost; username=root; password=; database=db_cadastro";
 
         public frmCadastroDeClientes()
         {
@@ -57,7 +58,7 @@ namespace CadastroDeClientes
                 }
 
                 //Validação do Nome completo
-                NomeCompleto = txtNomeCompleto.Text.Trim();
+                string nomecompleto = txtNomeCompleto.Text.Trim();
                 if (string.IsNullOrWhiteSpace(txtNomeCompleto.Text))
                 {
                     MessageBox.Show("Email inválido, Certifique-se que você digitou certo.", "Validação", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -65,8 +66,8 @@ namespace CadastroDeClientes
                 }
 
                 //Validação do E-mail
-                Email = txtEmail.Text.Trim();
-                if (!isValidEmail(Email))
+                string email = txtEmail.Text.Trim();
+                if (!isValidEmail(email))
                 {
                     MessageBox.Show("Email inválido, Certifique-se que você digitou certo.", "Validação", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
@@ -79,10 +80,54 @@ namespace CadastroDeClientes
                     MessageBox.Show("CPF inválido, Certifique-se que voçê digitou certo.", "Validação", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
+
+                //Criando uma conexão com o banco de dados
+                Conexao = new MySqlConnection(data_source);
+                Conexao.Open();
+
+                //Comando SQL para inserir um Cliente no banco de dados
+                MySqlCommand cmd = new MySqlCommand
+                {
+                    Connection = Conexao
+                };
+
+                cmd.Prepare();
+
+                cmd.CommandText = "INSERT INTO dadosdecliente(nomecompleto, nomesocial, email, cpf) " + ("VALUES (@nomecompleto, @nomesocial, @email, @cpf)");
+
+                //Adicionar parametros com o dados do formulário
+                cmd.Parameters.AddWithValue("@nomecompleto", txtNomeCompleto.Text.Trim());
+                cmd.Parameters.AddWithValue("@nomesocial", txtNomeSocial.Text.Trim());
+                cmd.Parameters.AddWithValue("@email", txtEmail.Text.Trim());
+                cmd.Parameters.AddWithValue("@cpf", txtCPF.Text.Trim());
+
+                //execulta o comando acima
+                cmd.ExecuteNonQuery();
+
+                //mensagem de sucesso
+                MessageBox.Show("Salvo com sucesso!", "Cadastro", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                txtNomeCompleto.Text = "";
+                txtNomeSocial.Text = "";
+                txtEmail.Text = "";
+                txtCPF.Text = "";
+
+            }
+            catch(MySqlException er)
+            {
+                MessageBox.Show("Erro" + er.Number + "Ocorreu: " + er.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Ocorreu: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                //Garantir que a conexão com o banco será fechada, mesmo se ocorrer um erro
+                if (Conexao != null && Conexao.State == ConnectionState.Open)
+                {
+                    Conexao.Close();
+                }
             }
         }
 
