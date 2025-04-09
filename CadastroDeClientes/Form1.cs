@@ -197,12 +197,17 @@ namespace CadastroDeClientes
                 //mensagem de sucesso
                 MessageBox.Show("Salvo com sucesso!", "Cadastro", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+                //LIMPA TUTOOOOOO
                 txtNomeCompleto.Text = "";
                 txtNomeSocial.Text = "";
                 txtEmail.Text = "";
                 txtCPF.Text = "";
 
+                //Atualiza a ListView
                 carregar_clientes();
+
+                //Abrir para a outra aba
+                tabControl1.SelectedIndex = 1;
             }
             catch(MySqlException er)
             {
