@@ -29,6 +29,7 @@ namespace CadastroDeClientes
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.plTopo = new System.Windows.Forms.Panel();
             this.lblTitulo = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -42,14 +43,19 @@ namespace CadastroDeClientes
             this.txtNomeCompleto = new System.Windows.Forms.TextBox();
             this.lblNomeCompleto = new System.Windows.Forms.Label();
             this.tbConsulta = new System.Windows.Forms.TabPage();
-            this.btnSalvar = new System.Windows.Forms.Button();
-            this.txtBuscar = new System.Windows.Forms.TextBox();
-            this.btnPesquisar = new System.Windows.Forms.Button();
             this.lstCliente = new System.Windows.Forms.ListView();
+            this.btnPesquisar = new System.Windows.Forms.Button();
+            this.txtBuscar = new System.Windows.Forms.TextBox();
+            this.btnSalvar = new System.Windows.Forms.Button();
+            this.btnNovoCliente = new System.Windows.Forms.Button();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnExcluirCliente = new System.Windows.Forms.Button();
             this.plTopo.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tbCadastro.SuspendLayout();
             this.tbConsulta.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // plTopo
@@ -100,7 +106,7 @@ namespace CadastroDeClientes
             this.tbCadastro.Location = new System.Drawing.Point(4, 29);
             this.tbCadastro.Name = "tbCadastro";
             this.tbCadastro.Padding = new System.Windows.Forms.Padding(3);
-            this.tbCadastro.Size = new System.Drawing.Size(413, 299);
+            this.tbCadastro.Size = new System.Drawing.Size(393, 299);
             this.tbCadastro.TabIndex = 0;
             this.tbCadastro.Text = "Dados de Clientes";
             this.tbCadastro.UseVisualStyleBackColor = true;
@@ -187,6 +193,41 @@ namespace CadastroDeClientes
             this.tbConsulta.Text = "Consulta";
             this.tbConsulta.UseVisualStyleBackColor = true;
             // 
+            // lstCliente
+            // 
+            this.lstCliente.ContextMenuStrip = this.contextMenuStrip1;
+            this.lstCliente.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.lstCliente.HideSelection = false;
+            this.lstCliente.Location = new System.Drawing.Point(3, 56);
+            this.lstCliente.Name = "lstCliente";
+            this.lstCliente.Size = new System.Drawing.Size(387, 240);
+            this.lstCliente.TabIndex = 3;
+            this.lstCliente.UseCompatibleStateImageBehavior = false;
+            this.lstCliente.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.lstCliente_ItemSelectionChanged);
+            // 
+            // btnPesquisar
+            // 
+            this.btnPesquisar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPesquisar.BackColor = System.Drawing.Color.DarkSlateBlue;
+            this.btnPesquisar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPesquisar.ForeColor = System.Drawing.Color.White;
+            this.btnPesquisar.Location = new System.Drawing.Point(308, 6);
+            this.btnPesquisar.Name = "btnPesquisar";
+            this.btnPesquisar.Size = new System.Drawing.Size(75, 29);
+            this.btnPesquisar.TabIndex = 2;
+            this.btnPesquisar.Text = "Buscar";
+            this.btnPesquisar.UseVisualStyleBackColor = false;
+            this.btnPesquisar.Click += new System.EventHandler(this.btnPesquisar_Click);
+            // 
+            // txtBuscar
+            // 
+            this.txtBuscar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtBuscar.Location = new System.Drawing.Point(21, 7);
+            this.txtBuscar.Name = "txtBuscar";
+            this.txtBuscar.Size = new System.Drawing.Size(272, 26);
+            this.txtBuscar.TabIndex = 0;
+            // 
             // btnSalvar
             // 
             this.btnSalvar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -203,44 +244,59 @@ namespace CadastroDeClientes
             this.btnSalvar.UseVisualStyleBackColor = false;
             this.btnSalvar.Click += new System.EventHandler(this.btnSalvar_Click);
             // 
-            // txtBuscar
+            // btnNovoCliente
             // 
-            this.txtBuscar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtBuscar.Location = new System.Drawing.Point(21, 7);
-            this.txtBuscar.Name = "txtBuscar";
-            this.txtBuscar.Size = new System.Drawing.Size(272, 26);
-            this.txtBuscar.TabIndex = 0;
+            this.btnNovoCliente.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnNovoCliente.BackColor = System.Drawing.Color.YellowGreen;
+            this.btnNovoCliente.FlatAppearance.BorderSize = 0;
+            this.btnNovoCliente.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNovoCliente.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnNovoCliente.ForeColor = System.Drawing.Color.White;
+            this.btnNovoCliente.Location = new System.Drawing.Point(137, 400);
+            this.btnNovoCliente.Name = "btnNovoCliente";
+            this.btnNovoCliente.Size = new System.Drawing.Size(105, 40);
+            this.btnNovoCliente.TabIndex = 3;
+            this.btnNovoCliente.Text = "Novo Cliente";
+            this.btnNovoCliente.UseVisualStyleBackColor = false;
+            this.btnNovoCliente.Click += new System.EventHandler(this.btnNovoCliente_Click);
             // 
-            // btnPesquisar
+            // contextMenuStrip1
             // 
-            this.btnPesquisar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnPesquisar.BackColor = System.Drawing.Color.DarkSlateBlue;
-            this.btnPesquisar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnPesquisar.ForeColor = System.Drawing.Color.White;
-            this.btnPesquisar.Location = new System.Drawing.Point(308, 6);
-            this.btnPesquisar.Name = "btnPesquisar";
-            this.btnPesquisar.Size = new System.Drawing.Size(75, 29);
-            this.btnPesquisar.TabIndex = 2;
-            this.btnPesquisar.Text = "Buscar";
-            this.btnPesquisar.UseVisualStyleBackColor = false;
-            this.btnPesquisar.Click += new System.EventHandler(this.btnPesquisar_Click);
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(150, 26);
             // 
-            // lstCliente
+            // toolStripMenuItem1
             // 
-            this.lstCliente.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lstCliente.HideSelection = false;
-            this.lstCliente.Location = new System.Drawing.Point(3, 41);
-            this.lstCliente.Name = "lstCliente";
-            this.lstCliente.Size = new System.Drawing.Size(387, 255);
-            this.lstCliente.TabIndex = 3;
-            this.lstCliente.UseCompatibleStateImageBehavior = false;
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 22);
+            this.toolStripMenuItem1.Text = "Excluir Cliente";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+            // 
+            // btnExcluirCliente
+            // 
+            this.btnExcluirCliente.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnExcluirCliente.BackColor = System.Drawing.Color.Red;
+            this.btnExcluirCliente.FlatAppearance.BorderSize = 0;
+            this.btnExcluirCliente.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnExcluirCliente.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnExcluirCliente.ForeColor = System.Drawing.Color.White;
+            this.btnExcluirCliente.Location = new System.Drawing.Point(301, 400);
+            this.btnExcluirCliente.Name = "btnExcluirCliente";
+            this.btnExcluirCliente.Size = new System.Drawing.Size(105, 40);
+            this.btnExcluirCliente.TabIndex = 5;
+            this.btnExcluirCliente.Text = "Excluir Cliente";
+            this.btnExcluirCliente.UseVisualStyleBackColor = false;
+            this.btnExcluirCliente.Click += new System.EventHandler(this.btnExcluirCliente_Click);
             // 
             // frmCadastroDeClientes
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(425, 461);
+            this.Controls.Add(this.btnExcluirCliente);
+            this.Controls.Add(this.btnNovoCliente);
             this.Controls.Add(this.btnSalvar);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.plTopo);
@@ -253,6 +309,7 @@ namespace CadastroDeClientes
             this.tbCadastro.PerformLayout();
             this.tbConsulta.ResumeLayout(false);
             this.tbConsulta.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -276,6 +333,10 @@ namespace CadastroDeClientes
         private System.Windows.Forms.Button btnPesquisar;
         private System.Windows.Forms.TextBox txtBuscar;
         private System.Windows.Forms.ListView lstCliente;
+        private System.Windows.Forms.Button btnNovoCliente;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.Button btnExcluirCliente;
     }
 }
 

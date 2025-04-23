@@ -20,10 +20,15 @@ namespace CadastroDeClientes
         MySqlConnection Conexao;
         string data_source = "datasource=localhost; username=root; password=; database=db_cadastro";
 
+        private int? codigo_cliente = null;
+
         public frmCadastroDeClientes()
         {
             InitializeComponent();
             ArredondarBotao(btnSalvar, 50);
+            ArredondarBotao(btnPesquisar, 50);
+            ArredondarBotao(btnExcluirCliente, 50);
+            ArredondarBotao(btnNovoCliente, 50);
 
             //Configurações iniciais do ListView
             lstCliente.View = View.Details; //Define a Visualização como "Detalhes"
@@ -183,21 +188,53 @@ namespace CadastroDeClientes
 
                 cmd.Prepare();
 
-                cmd.CommandText = "INSERT INTO dadosdecliente(nomecompleto, nomesocial, email, cpf) " + ("VALUES (@nomecompleto, @nomesocial, @email, @cpf)");
+                if (codigo_cliente == null)
+                {
+                    cmd.CommandText = "INSERT INTO dadosdecliente(nomecompleto, nomesocial, email, cpf) " + ("VALUES (@nomecompleto, @nomesocial, @email, @cpf)");
 
-                //Adicionar parametros com o dados do formulário
-                cmd.Parameters.AddWithValue("@nomecompleto", txtNomeCompleto.Text.Trim());
-                cmd.Parameters.AddWithValue("@nomesocial", txtNomeSocial.Text.Trim());
-                cmd.Parameters.AddWithValue("@email", txtEmail.Text.Trim());
-                cmd.Parameters.AddWithValue("@cpf", txtCPF.Text.Trim());
+                    //Adicionar parametros com o dados do formulário
+                    cmd.Parameters.AddWithValue("@nomecompleto", txtNomeCompleto.Text.Trim());
+                    cmd.Parameters.AddWithValue("@nomesocial", txtNomeSocial.Text.Trim());
+                    cmd.Parameters.AddWithValue("@email", txtEmail.Text.Trim());
+                    cmd.Parameters.AddWithValue("@cpf", txtCPF.Text.Trim());
 
-                //execulta o comando acima
-                cmd.ExecuteNonQuery();
+                    //execulta o comando acima
+                    cmd.ExecuteNonQuery();
 
-                //mensagem de sucesso
-                MessageBox.Show("Salvo com sucesso!", "Cadastro", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //mensagem de sucesso
+                    MessageBox.Show("Salvo com sucesso!", "Cadastro", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    //UPDATE
+                    cmd.CommandText = $"UPDATE dadosdecliente SET " +
+                        $"nomecompleto = @nomecompleto, " +
+                        $"nomesocial = @nomesocial, " +
+                        $"email = @email," +
+                        $"cpf = @cpf " +
+                        $"WHERE codigo = @codigo";
+
+                    //Adiciona os parâmetros com os dados do formulário
+                    cmd.Parameters.AddWithValue("@nomecompleto", txtNomeCompleto.Text.Trim());
+                    cmd.Parameters.AddWithValue("@nomesocial", txtNomeSocial.Text.Trim());
+                    cmd.Parameters.AddWithValue("@email", email);
+                    cmd.Parameters.AddWithValue("@cpf", cpf);
+                    cmd.Parameters.AddWithValue("@codigo", codigo_cliente);
+
+                    //Executa o comando de alteração no banco
+                    cmd.ExecuteNonQuery();
+
+                    //Mensagem de sucesso para dados atualizados
+                    MessageBox.Show($"Os dados com o código {codigo_cliente} foram alterados com sucesso!",
+                                     "Sucesso",
+                                     MessageBoxButtons.OK,
+                                     MessageBoxIcon.Information);
+
+
+                }
 
                 //LIMPA TUTOOOOOO
+                codigo_cliente = null;
                 txtNomeCompleto.Text = "";
                 txtNomeSocial.Text = "";
                 txtEmail.Text = "";
@@ -209,7 +246,7 @@ namespace CadastroDeClientes
                 //Abrir para a outra aba
                 tabControl1.SelectedIndex = 1;
             }
-            catch(MySqlException er)
+            catch (MySqlException er)
             {
                 MessageBox.Show("Erro " + er.Number + " Ocorreu: " + er.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -247,6 +284,105 @@ namespace CadastroDeClientes
                 ctrl.Region = new Region(path);
                 ctrl.Invalidate();
             }
+        }
+
+        private void lstCliente_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        {
+            ListView.SelectedListViewItemCollection clientedaselecao = lstCliente.SelectedItems;
+
+            foreach (ListViewItem item in clientedaselecao)
+            {
+                codigo_cliente = Convert.ToInt32(item.SubItems[0].Text);
+
+                // Exibe uma mensagem com o código do cliente
+
+                MessageBox.Show("Código do cliente: " + codigo_cliente.ToString(),
+                                 "Código Selecionado",
+                                 MessageBoxButtons.OK,
+                                 MessageBoxIcon.Information);
+
+                txtNomeCompleto.Text = item.SubItems[1].Text;
+                txtNomeSocial.Text = item.SubItems[2].Text;
+                txtEmail.Text = item.SubItems[3].Text;
+                txtCPF.Text = item.SubItems[4].Text;
+
+            }
+            //Muda para a aba de dados do cliente
+            tabControl1.SelectedIndex = 0;
+        }
+
+        private void btnNovoCliente_Click(object sender, EventArgs e)
+        {
+            //Limpa todos os campos, evitando que ocorra a substituição de dados de outro cliente (UPDATE) e criando um novo cliente(cadastro)
+
+            codigo_cliente = null;
+
+            txtNomeCompleto.Text = string.Empty;
+            txtNomeSocial.Text = " ";
+            txtEmail.Text = " ";
+            txtCPF.Text = " ";
+
+            txtNomeCompleto.Focus();
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            ExcluirCliente();
+        }
+
+        private void ExcluirCliente()
+        {
+            try
+            {
+                DialogResult opDigi = MessageBox.Show($"Tem certeza que quer excluir {codigo_cliente}?", "Aviso", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+
+                if (opDigi == DialogResult.Yes)
+                {
+                    using (Conexao = new MySqlConnection(data_source))
+                    {
+                        Conexao.Open();
+
+                        //Comando SQL para inserir um Cliente no banco de dados
+                        MySqlCommand cmd = new MySqlCommand
+                        {
+                            Connection = Conexao
+                        };
+
+                        cmd.Prepare();
+
+                        cmd.CommandText = "DELETE FROM dadosdecliente WHERE codigo= @codigo";
+
+                        //Adicionar parametros com o dados do formulário
+                        cmd.Parameters.AddWithValue("@codigo", codigo_cliente);
+
+                        //execulta o comando acima
+                        cmd.ExecuteNonQuery();
+
+                        carregar_clientes();
+                    }
+                }
+            }
+            catch (MySqlException er)
+            {
+                MessageBox.Show("Erro " + er.Number + " Ocorreu: " + er.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ocorreu: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                //Garantir que a conexão com o banco será fechada, mesmo se ocorrer um erro
+                if (Conexao != null && Conexao.State == ConnectionState.Open)
+                {
+                    Conexao.Close();
+                }
+            }
+        }
+
+        private void btnExcluirCliente_Click(object sender, EventArgs e)
+        {
+            ExcluirCliente();
         }
     }
 }
