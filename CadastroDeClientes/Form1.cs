@@ -30,6 +30,8 @@ namespace CadastroDeClientes
             ArredondarBotao(btnExcluirCliente, 50);
             ArredondarBotao(btnNovoCliente, 50);
 
+            btnExcluirCliente.Visible = false;
+
             //Configurações iniciais do ListView
             lstCliente.View = View.Details; //Define a Visualização como "Detalhes"
             lstCliente.LabelEdit = true; //Permite editar os títulos das colunas
@@ -289,6 +291,7 @@ namespace CadastroDeClientes
         private void lstCliente_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             ListView.SelectedListViewItemCollection clientedaselecao = lstCliente.SelectedItems;
+            btnExcluirCliente.Visible = true;
 
             foreach (ListViewItem item in clientedaselecao)
             {
@@ -305,16 +308,14 @@ namespace CadastroDeClientes
                 txtNomeSocial.Text = item.SubItems[2].Text;
                 txtEmail.Text = item.SubItems[3].Text;
                 txtCPF.Text = item.SubItems[4].Text;
-
             }
             //Muda para a aba de dados do cliente
             tabControl1.SelectedIndex = 0;
         }
 
-        private void btnNovoCliente_Click(object sender, EventArgs e)
+        private void Limpar()
         {
             //Limpa todos os campos, evitando que ocorra a substituição de dados de outro cliente (UPDATE) e criando um novo cliente(cadastro)
-
             codigo_cliente = null;
 
             txtNomeCompleto.Text = string.Empty;
@@ -325,9 +326,16 @@ namespace CadastroDeClientes
             txtNomeCompleto.Focus();
         }
 
+        private void btnNovoCliente_Click(object sender, EventArgs e)
+        {
+              Limpar();
+              btnExcluirCliente.Visible = false;
+        }
+
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
             ExcluirCliente();
+            btnExcluirCliente.Visible = false;
         }
 
         private void ExcluirCliente()
@@ -359,6 +367,7 @@ namespace CadastroDeClientes
                         cmd.ExecuteNonQuery();
 
                         carregar_clientes();
+                        Limpar();
                     }
                 }
             }
